@@ -2,69 +2,68 @@ package org.SurveyAssignment.service;
 
 import org.SurveyAssignment.model.Answer;
 import org.SurveyAssignment.model.Candidate;
-import org.SurveyAssignment.model.Question;
 import org.SurveyAssignment.model.Survey;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.SurveyAssignment.model.Question;
+
+import java.util.*;
 
 public class SurveyService {
-    private List<Survey> surveys;
-
-    public SurveyService() {
-        this.surveys = new ArrayList<>();
-    }
+    private List<Survey> surveys = new ArrayList<>();
 
     public void addSurvey(Survey survey) {
-        if (!survey.isValid()) {
-            throw new IllegalStateException("Survey must have between 10 and 40 unique questions.");
-        }
         surveys.add(survey);
     }
 
-    public Map<String, Integer> getSurveyResults(Survey survey) {
-        Map<String, Integer> resultMap = new HashMap<>();
-        for (Question q : survey.getQuestions()) {
-            for (String option : Question.getOptions()) {
-                resultMap.put(q.getText() + " - " + option, 0);
-            }
-        }
+    public String findMostCommonAnswer(Survey survey) {
+        Map<String, Integer> answerCount = new HashMap<>();
 
         for (Candidate candidate : survey.getCandidates()) {
-            for (Answer answer : candidate.getAnswersForSurvey(survey)) {
-                String key = answer.getQuestion().getText() + " - " + answer.getSelectedOption();
-                resultMap.put(key, resultMap.get(key) + 1);
+            for (Answer answer : candidate.getAnswers()) {
+                String selectedOption = answer.getSelectedOption();
+                answerCount.put(selectedOption, answerCount.getOrDefault(selectedOption, 0) + 1);
             }
         }
 
-        return resultMap;
-    }
-
-    public String findMostCommonAnswer(Survey survey) {
-        Map<String, Integer> results = getSurveyResults(survey);
-        return results.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse("No answers yet.");
+        return Collections.max(answerCount.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
     public Candidate findMostActiveCandidate() {
-        return surveys.stream()
-                .flatMap(s -> s.getCandidates().stream())
-                .max(Comparator.comparingInt(Candidate::getSurveyCount))
-                .orElse(null);
+        Candidate topCandidate = null;
+        int maxAnswers = 0;
+
+        for (Survey survey : surveys) {
+            for (Candidate candidate : survey.getCandidates()) {
+                int answerCount = candidate.getAnswers().size();
+                if (answerCount > maxAnswers) {
+                    topCandidate = candidate;
+                    maxAnswers = answerCount;
+                }
+            }
+        }
+        return topCandidate;
     }
 
     public void removeLowResponseQuestions(Survey survey) {
-        int totalCandidates = survey.getCandidates().size();
-        survey.getQuestions().removeIf(q -> {
-            long answerCount = survey.getCandidates().stream()
-                    .flatMap(c -> c.getAnswersForSurvey(survey).stream())
-                    .filter(a -> a.getQuestion().equals(q))
-                    .count();
-            return answerCount < totalCandidates / 2.0;
-        });
+        List<Question> remainingQuestions = new ArrayList<>();
+
+        for (Question question : survey.getQuestions()) {
+            int answerCount = 0;
+
+            for (Candidate candidate : survey.getCandidates()) {
+                for (Answer answer : candidate.getAnswers()) {
+                    if (answer.getQuestion().equals(question)) {
+                        answerCount++;
+                        break;
+                    }
+                }
+            }
+
+            if (answerCount > 1) {
+                remainingQuestions.add(question);
+            }
+        }
+
+        survey.setQuestions(remainingQuestions);
     }
 }
+

@@ -1,36 +1,26 @@
 package org.SurveyAssignment.model;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class Question {
-    private String text;
-    private static final List<String> OPTIONS = Arrays.asList(
-            "Agree", "Slightly Agree", "Slightly Disagree", "Disagree"
-    );
-    
-    public Question(String text) {
+public abstract class Question {
+    protected String text;
+    protected List<String> options;
+
+    public Question(String text, List<String> options) {
+        if (options == null || options.isEmpty()) {
+            throw new IllegalArgumentException("Options list cannot be null or empty.");
+        }
         this.text = text;
+        this.options = options;
     }
-    
+
     public String getText() {
         return text;
     }
-    
-    public static List<String> getOptions() {
-        return OPTIONS;
+
+    public List<String> getOptions() {
+        return options;
     }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Question)) return false;
-        Question other = (Question) obj;
-        return this.text.equalsIgnoreCase(other.text);
-    }
-    
-    @Override
-    public int hashCode() {
-        return text.toLowerCase().hashCode();
-    }
+
+    public abstract void displayQuestion();
 }

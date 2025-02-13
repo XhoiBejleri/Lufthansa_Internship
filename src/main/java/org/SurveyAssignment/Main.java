@@ -2,33 +2,78 @@ package org.SurveyAssignment;
 
 import org.SurveyAssignment.model.Answer;
 import org.SurveyAssignment.model.Candidate;
+import org.SurveyAssignment.model.MultipleChoiceQuestion;
 import org.SurveyAssignment.model.Question;
 import org.SurveyAssignment.model.Survey;
 import org.SurveyAssignment.service.SurveyService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         SurveyService manager = new SurveyService();
 
-        Survey survey = new Survey("Java Best Practice", "Java", "A survey about Java Programming.");
-        for (int i = 1; i <= 10; i++) {
-            survey.addQuestion(new Question("Question " + i + "?"));
+        System.out.print("Enter survey title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter survey description: ");
+        String description = scanner.nextLine();
+        System.out.print("Enter survey topic: ");
+        String topic = scanner.nextLine();
+
+        Survey survey = new Survey(title, topic, description);
+
+        System.out.print("Enter the number of questions: ");
+        int numQuestions = scanner.nextInt();
+        scanner.nextLine();
+
+        for (int i = 1; i <= numQuestions; i++) {
+            System.out.print("Enter question " + i + ": ");
+            String questionText = scanner.nextLine();
+            List<String> options = Arrays.asList("Agree", "Slightly Agree", "Slightly Disagree", "Disagree");
+            survey.addQuestion(new MultipleChoiceQuestion(questionText, options));
         }
 
-        System.out.println("Survey Title: " + survey.getTitle());
-        System.out.println("Survey Topic: " + survey.getTopic());
-        System.out.println("Survey Description: " + survey.getDescription());
+        System.out.print("Enter First name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Enter Last name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Enter Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter Phone Number: ");
+        String phone = scanner.nextLine();
 
-        Candidate xhoi = new Candidate("Xhoi", "Bejleri", "xhoi@gmail.com", "0123456789");
-        List<Answer> xhoiAnswers = new ArrayList<>();
+        Candidate candidate = new Candidate(firstName, lastName, email, phone);
+
+        List<Answer> answers = new ArrayList<>();
         for (Question q : survey.getQuestions()) {
-            xhoiAnswers.add(new Answer(q, "Agree"));
+            System.out.println(q.getText());
+            System.out.println("1. Agree");
+            System.out.println("2. Slightly Agree");
+            System.out.println("3. Slightly Disagree");
+            System.out.println("4. Disagree");
+            System.out.print("Select an option (1-4): ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            String selectedAnswer = switch (choice) {
+                case 1 -> "Agree";
+                case 2 -> "Slightly Agree";
+                case 3 -> "Slightly Disagree";
+                case 4 -> "Disagree";
+                default -> "No answer";
+            };
+            answers.add(new Answer(q, selectedAnswer));
         }
-        xhoi.takeSurvey(survey, xhoiAnswers);
-        survey.addCandidate(xhoi);
+
+        for (Answer answer : answers) {
+            candidate.addAnswer(answer);
+        }
+
+        survey.addCandidate(candidate);
 
         manager.addSurvey(survey);
 
@@ -41,5 +86,7 @@ public class Main {
 
         manager.removeLowResponseQuestions(survey);
         System.out.println("Remaining questions: " + survey.getQuestionCount());
+
+        scanner.close();
     }
 }

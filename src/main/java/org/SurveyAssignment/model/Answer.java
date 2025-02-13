@@ -5,12 +5,16 @@ public class Answer {
     private String selectedOption;
 
     public Answer(Question question, String selectedOption) {
-        if (!Question.getOptions().contains(selectedOption)) {
-            throw new IllegalArgumentException("Invalid answer option");
+        if (question instanceof MultipleChoiceQuestion) {
+            MultipleChoiceQuestion mcq = (MultipleChoiceQuestion) question;
+            if (!mcq.getOptions().contains(selectedOption)) {
+                throw new IllegalArgumentException("Invalid answer option");
+            }
         }
         this.question = question;
         this.selectedOption = selectedOption;
     }
+
 
     public Question getQuestion() {
         return question;
