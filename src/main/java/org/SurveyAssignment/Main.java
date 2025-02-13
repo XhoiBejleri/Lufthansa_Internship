@@ -6,6 +6,7 @@ import org.SurveyAssignment.model.MultipleChoiceQuestion;
 import org.SurveyAssignment.model.Question;
 import org.SurveyAssignment.model.Survey;
 import org.SurveyAssignment.service.SurveyService;
+import org.SurveyAssignment.utils.SurveyValidator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,13 +17,28 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         SurveyService manager = new SurveyService();
+        SurveyValidator validator = new SurveyValidator();
 
         System.out.print("Enter survey title: ");
         String title = scanner.nextLine();
+        if (!validator.isValidTitle(title)) {
+            System.out.println("Survey title cannot be empty.");
+            return;
+        }
+
         System.out.print("Enter survey description: ");
         String description = scanner.nextLine();
+        if (!validator.isValidDescription(description)) {
+            System.out.println("Survey description cannot be empty.");
+            return;
+        }
+
         System.out.print("Enter survey topic: ");
         String topic = scanner.nextLine();
+        if (!validator.isValidTopic(topic)) {
+            System.out.println("Survey topic cannot be empty.");
+            return;
+        }
 
         Survey survey = new Survey(title, topic, description);
 
@@ -33,6 +49,11 @@ public class Main {
         for (int i = 1; i <= numQuestions; i++) {
             System.out.print("Enter question " + i + ": ");
             String questionText = scanner.nextLine();
+            if (!validator.isValidQuestion(questionText)) {
+                System.out.println("Question cannot be empty.");
+                i--;
+                continue;
+            }
             List<String> options = Arrays.asList("Agree", "Slightly Agree", "Slightly Disagree", "Disagree");
             survey.addQuestion(new MultipleChoiceQuestion(questionText, options));
         }
