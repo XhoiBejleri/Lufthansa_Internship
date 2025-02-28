@@ -1,53 +1,33 @@
-package org.example.model.entity;
+package org.example.model.resource;
 
 import org.example.model.enums.FlightStatus;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = "flight")
-public class Flight {
+public class FlightResource {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "origin", nullable = false)
     private String origin;
-
-    @Column(name = "destination", nullable = false)
     private String destination;
-
-    @Column(name = "airline", nullable = false)
     private String airline;
-
-    @Column(name = "flight_number", nullable = false)
     private String flightNumber;
-
-    @Column(name = "departure_date", nullable = false)
     private LocalDate departureDate;
-
-    @Column(name = "arrival_date", nullable = false)
     private LocalDate arrivalDate;
-
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
     private FlightStatus flightStatus;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
-    private List<Booking> bookings = new ArrayList<>();
+    public FlightResource() {
+    }
+
+    public FlightResource(Long id, String origin, String destination, String airline,
+                          String flightNumber, LocalDate departureDate, LocalDate arrivalDate, FlightStatus flightStatus) {
+        this.id = id;
+        this.origin = origin;
+        this.destination = destination;
+        this.airline = airline;
+        this.flightNumber = flightNumber;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
+        this.flightStatus = flightStatus;
+    }
 
 
     public Long getId() {
@@ -114,17 +94,9 @@ public class Flight {
         this.flightStatus = flightStatus;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     @Override
     public String toString() {
-        return "Flight{" +
+        return "FlightResource{" +
                 "id=" + id +
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
@@ -133,7 +105,6 @@ public class Flight {
                 ", departureDate=" + departureDate +
                 ", arrivalDate=" + arrivalDate +
                 ", flightStatus=" + flightStatus +
-                ", bookings=" + bookings +
                 '}';
     }
 }

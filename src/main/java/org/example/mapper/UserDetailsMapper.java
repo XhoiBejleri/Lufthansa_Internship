@@ -1,35 +1,36 @@
 package org.example.mapper;
 
-import org.example.model.dto.UserDetailsDTO;
+
 import org.example.model.entity.UserDetails;
+import org.example.model.resource.UserDetailsResource;
+import org.springframework.stereotype.Component;
 
-public class UserDetailsMapper extends AbstractMapper<UserDetails, UserDetailsDTO> {
+@Component
+public class UserDetailsMapper {
 
-    @Override
-    public UserDetails toEntity(UserDetailsDTO userDetailsDTO) {
-        if (userDetailsDTO == null) {
+    public UserDetails toEntity(UserDetailsResource resource) {
+        if (resource == null) {
             return null;
         }
         UserDetails userDetails = new UserDetails();
-        userDetails.setId(userDetailsDTO.getId());
-        userDetails.setFirstName(userDetailsDTO.getFirstName());
-        userDetails.setLastName(userDetailsDTO.getLastName());
-        userDetails.setEmail(userDetailsDTO.getEmail());
-        userDetails.setPhoneNumber(userDetailsDTO.getPhoneNumber());
+        userDetails.setId(resource.getId());
+        userDetails.setFirstName(resource.getFirstName());
+        userDetails.setLastName(resource.getLastName());
+        userDetails.setEmail(resource.getEmail());
+        userDetails.setPhoneNumber(resource.getPhoneNumber());
         return userDetails;
     }
 
-    @Override
-    public UserDetailsDTO toDto(UserDetails userDetails) {
-        if (userDetails == null) {
+    public UserDetailsResource toDto(UserDetails entity) {
+        if (entity == null) {
             return null;
         }
-        UserDetailsDTO dto = new UserDetailsDTO();
-        dto.setId(userDetails.getId());
-        dto.setFirstName(userDetails.getFirstName());
-        dto.setLastName(userDetails.getLastName());
-        dto.setEmail(userDetails.getEmail());
-        dto.setPhoneNumber(userDetails.getPhoneNumber());
-        return dto;
+        UserDetailsResource resource = new UserDetailsResource();
+        resource.setId(entity.getId());
+        resource.setFirstName(entity.getFirstName());
+        resource.setLastName(entity.getLastName());
+        resource.setEmail(entity.getEmail());
+        resource.setPhoneNumber(entity.getPhoneNumber());
+        return resource;
     }
 }

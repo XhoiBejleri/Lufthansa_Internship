@@ -1,35 +1,42 @@
 package org.example.mapper;
 
-import org.example.model.dto.UserDTO;
-import org.example.model.dto.UserDetailsDTO;
+
 import org.example.model.entity.User;
+import org.example.model.resource.UserDetailsResource;
+import org.example.model.resource.UserResource;
+import org.springframework.stereotype.Component;
 
-public class UserMapper extends AbstractMapper<User, UserDTO> {
+@Component
+public class UserMapper {
 
-    @Override
-    public User toEntity(UserDTO dto) {
-        if (dto == null) return null;
+    private final UserDetailsMapper userDetailsMapper;
+
+    public UserMapper() {
+        this.userDetailsMapper = new UserDetailsMapper();
+    }
+
+    public User toEntity(UserResource resource) {
+        if (resource == null) return null;
         User user = new User();
-        user.setId(dto.getId());
-        user.setPassword(dto.getPassword());
-        user.setRole(dto.getRole());
-        user.setUserDetails(new UserDetailsMapper().toEntity(dto.getUserDetailsDTO()));
+        user.setId(resource.getId());
+        user.setPassword(resource.getPassword());
+        user.setRole(resource.getRole());
+        user.setUserDetails(userDetailsMapper.toEntity(resource.getUserDetails()));
         return user;
     }
 
-    @Override
-    public UserDTO toDto(User entity) {
+    public UserResource toDto(User entity) {
         if (entity == null) return null;
-        UserDTO dto = new UserDTO();
-        dto.setId(entity.getId());
-        dto.setPassword(entity.getPassword());
-        dto.setRole(entity.getRole());
-        dto.setUserDetailsDTO(new UserDetailsMapper().toDto(entity.getUserDetails()));
-        return dto;
+        UserResource resource = new UserResource();
+        resource.setId(entity.getId());
+        resource.setPassword(entity.getPassword());
+        resource.setRole(entity.getRole());
+        resource.setUserDetails(userDetailsMapper.toDto(entity.getUserDetails()));
+        return resource;
     }
 
-    public UserDetailsDTO toUserDetailsDto(User entity) {
+    public UserDetailsResource toUserDetailsResource(User entity) {
         if (entity == null || entity.getUserDetails() == null) return null;
-        return new UserDetailsMapper().toDto(entity.getUserDetails());
+        return userDetailsMapper.toDto(entity.getUserDetails());
     }
 }

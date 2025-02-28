@@ -1,13 +1,24 @@
-package org.example.model.dto;
+package org.example.model.resource;
 
-
-public class UserDetailsDTO {
+public class UserDetailsResource {
 
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
+
+    public UserDetailsResource() {
+    }
+
+    public UserDetailsResource(Long id, String firstName, String lastName, String email, String phoneNumber) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
 
     public Long getId() {
         return id;
@@ -51,7 +62,7 @@ public class UserDetailsDTO {
 
     @Override
     public String toString() {
-        return "UserDetailsDto{" +
+        return "UserDetailsResource{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -1,16 +1,19 @@
 package org.example.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+
 import org.example.model.enums.BookingStatus;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
@@ -21,10 +24,10 @@ public class Booking {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "booking_date", unique = true, nullable = false)
-    private String bookingDate;
+    @Column(name = "booking_date", nullable = false)
+    private LocalDateTime bookingDate;
 
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus bookingStatus;
 
@@ -36,6 +39,7 @@ public class Booking {
     @JoinColumn(name = "flight_id", referencedColumnName = "id")
     private Flight flight;
 
+
     public Long getId() {
         return id;
     }
@@ -44,11 +48,11 @@ public class Booking {
         this.id = id;
     }
 
-    public String getBookingDate() {
+    public LocalDateTime getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(String bookingDate) {
+    public void setBookingDate(LocalDateTime bookingDate) {
         this.bookingDate = bookingDate;
     }
 
@@ -68,13 +72,22 @@ public class Booking {
         this.user = user;
     }
 
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
+    }
+
     @Override
     public String toString() {
         return "Booking{" +
                 "id=" + id +
-                ", bookingDate='" + bookingDate + '\'' +
+                ", bookingDate=" + bookingDate +
                 ", bookingStatus=" + bookingStatus +
                 ", user=" + user +
+                ", flight=" + flight +
                 '}';
     }
 }
